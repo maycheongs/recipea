@@ -1,0 +1,11 @@
+@page
+@{
+    Layout = "_Layout";
+}
+
+<h2>Create an Account</h2>
+<form method="post" action="/Auth/Login">
+    <input name="Username" placeholder="Username" class="form-control mb-2" />
+    <input name="Password" type="password" placeholder="Password" class="form-control mb-2" />
+    <button class="btn btn-success">Sign Up</button>
+</form>
