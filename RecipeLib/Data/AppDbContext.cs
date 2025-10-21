@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RecipeLib.Models; 
 
 namespace RecipeLib.Data
 {
@@ -8,6 +9,6 @@ namespace RecipeLib.Data
         {
         }
 
-        // We'll add DbSets later
+        public DbSet<Recipe> Recipes { get; set; }
     }
 }
