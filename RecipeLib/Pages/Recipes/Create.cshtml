@@ -1,0 +1,230 @@
+@page
+@model RecipeLib.Pages.Recipes.CreateModel
+@{
+    ViewData["Title"] = "Create Recipe";
+}
+
+<div class="container-fluid p-4">
+    <!-- Autofill Button -->
+    <button type="button" class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#autofillModal">
+        <i class="bi bi-scissors me-2"></i> Autofill recipe from...
+    </button>
+
+    <form method="post" class="recipe-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- Title -->
+        <div class="form-floating mb-3">
+            <input asp-for="Recipe.Title" class="form-control" id="floatingTitle" placeholder="Title" required />
+            <label for="floatingTitle">Title</label>
+            <span asp-validation-for="Recipe.Title" class="text-danger"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="form-floating mb-3">
+            <textarea asp-for="Recipe.Description" class="form-control" id="floatingDescription" placeholder="Description" style="height: 100px"></textarea>
+            <label for="floatingDescription">Description</label>
+            <span asp-validation-for="Recipe.Description" class="text-danger"></span>
+        </div>
+
+        <!-- Image URL -->
+        <div class="form-floating mb-3">
+            <input asp-for="Recipe.ImageUrl" class="form-control" id="floatingImageUrl" placeholder="Image URL" type="url" />
+            <label for="floatingImageUrl">Image URL</label>
+            <span asp-validation-for="Recipe.ImageUrl" class="text-danger"></span>
+        </div>
+
+        <!-- Source -->
+        <div class="form-floating mb-3">
+            <input asp-for="Recipe.Source" class="form-control" id="floatingSource" placeholder="Source" />
+            <label for="floatingSource">Source</label>
+            <span asp-validation-for="Recipe.Source" class="text-danger"></span>
+        </div>
+
+        <!-- Row for Times -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input asp-for="Recipe.ActiveTime" class="form-control" id="floatingActiveTime" placeholder="Active Time" />
+                    <label for="floatingActiveTime">Active Time (e.g., 5 Minutes)</label>
+                    <span asp-validation-for="Recipe.ActiveTime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input asp-for="Recipe.TotalTime" class="form-control" id="floatingTotalTime" placeholder="Total Time" />
+                    <label for="floatingTotalTime">Total Time (e.g., 20 Minutes)</label>
+                    <span asp-validation-for="Recipe.TotalTime" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ingredients -->
+        <div class="form-floating mb-3">
+            <textarea asp-for="Recipe.Ingredients" class="form-control" id="floatingIngredients" placeholder="Ingredients" style="height: 200px"></textarea>
+            <label for="floatingIngredients">Ingredients</label>
+            <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
+            <small class="form-text text-muted">Enter each ingredient on a new line</small>
+        </div>
+
+        <!-- Instructions -->
+        <div class="form-floating mb-3">
+            <textarea asp-for="Recipe.Instructions" class="form-control" id="floatingInstructions" placeholder="Instructions" style="height: 200px"></textarea>
+            <label for="floatingInstructions">Instructions</label>
+            <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+            <small class="form-text text-muted">Enter each step on a new line</small>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid gap-2 mb-3">
+            <button type="submit" class="btn btn-success btn-lg">Create Recipe</button>
+        </div>
+
+        <div class="text-center">
+            <a asp-page="Index" class="text-muted">Back to List</a>
+        </div>
+    </form>
+</div>
+
+<!-- Autofill Modal -->
+<div class="modal fade" id="autofillModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Recipe From...</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#urlModal">
+                        <i class="bi bi-link-45deg me-2"></i> Import from URL
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" disabled>
+                        <i class="bi bi-clipboard me-2"></i> Paste from Clipboard (Coming Soon)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- URL Import Modal -->
+<div class="modal fade" id="urlModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import from URL</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="urlForm">
+                    <div class="form-floating">
+                        <input type="url" class="form-control" id="recipeUrl" placeholder="https://example.com/recipe">
+                        <label for="recipeUrl">Recipe URL</label>
+                    </div>
+                    <div class="invalid-feedback">Please enter a valid URL</div>
+                </div>
+                <div id="urlProgress" class="text-center mt-3" style="display: none;">
+                    <div class="spinner-border text-success mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted">Importing recipe... <span id="urlCountdown">15</span>s</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="urlImportButton">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Real URL import using Spoonacular API
+        document.getElementById('urlImportButton')?.addEventListener('click', async function() {
+            const urlInput = document.getElementById('recipeUrl');
+            const url = urlInput.value.trim();
+            
+            if (!url || !isValidUrl(url)) {
+                urlInput.classList.add('is-invalid');
+                return;
+            }
+            
+            urlInput.classList.remove('is-invalid');
+            document.getElementById('urlForm').style.display = 'none';
+            document.getElementById('urlProgress').style.display = 'block';
+            this.disabled = true;
+            
+            let countdown = 15;
+            const timer = setInterval(() => {
+                countdown--;
+                document.getElementById('urlCountdown').textContent = countdown;
+                if (countdown <= 0) clearInterval(timer);
+            }, 1000);
+            
+            // Set 15-second timeout
+            const timeoutId = setTimeout(() => {
+                clearInterval(timer);
+                alert('Import timed out. Please try again.');
+                resetUrlModal();
+            }, 15000);
+            
+            try {
+                // Call the backend API endpoint
+                const response = await fetch('?handler=ImportFromUrl', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+                
+                clearTimeout(timeoutId);
+                clearInterval(timer);
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Success! Redirect to the details page of the imported recipe
+                    window.location.href = `/Recipes/Details/${result.id}`;
+                } else {
+                    // Show error message
+                    alert(result.error || 'Failed to import recipe. Please try again.');
+                    resetUrlModal();
+                }
+            } catch (error) {
+                clearTimeout(timeoutId);
+                clearInterval(timer);
+                console.error('Import error:', error);
+                alert('Failed to import recipe. Please check the URL and try again.');
+                resetUrlModal();
+            }
+        });
+        
+        function isValidUrl(string) {
+            try {
+                const url = new URL(string);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        function resetUrlModal() {
+            const urlModal = document.getElementById('urlModal');
+            const urlInput = document.getElementById('recipeUrl');
+            
+            document.getElementById('urlForm').style.display = 'block';
+            document.getElementById('urlProgress').style.display = 'none';
+            document.getElementById('urlImportButton').disabled = false;
+            document.getElementById('urlCountdown').textContent = '15';
+            urlInput.value = '';
+            urlInput.classList.remove('is-invalid');
+            
+            bootstrap.Modal.getInstance(urlModal)?.hide();
+        }
+    </script>
+}
