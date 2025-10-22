@@ -14,7 +14,7 @@
     <form method="get" id="filterForm">
         <div class="row g-3">
             <!-- Search Box -->
-            <div class="col-md-10">
+            <div class="col-md-@((!string.IsNullOrEmpty(Model.SearchQuery) || Model.MaxActiveTime.HasValue || Model.MaxTotalTime.HasValue) ? "8" : "10")">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" class="form-control" name="searchQuery" 
@@ -22,6 +22,16 @@
                            value="@Model.SearchQuery">
                 </div>
             </div>
+
+            <!-- Clear Filters Button (only shown when filters are active) -->
+            @if (!string.IsNullOrEmpty(Model.SearchQuery) || Model.MaxActiveTime.HasValue || Model.MaxTotalTime.HasValue)
+            {
+                <div class="col-md-2">
+                    <a href="@Url.Page("./Index")" class="btn btn-outline-secondary w-100" title="Clear all filters">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            }
 
             <!-- Filter Button -->
             <div class="col-md-2 position-relative">
