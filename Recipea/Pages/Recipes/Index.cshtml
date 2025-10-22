@@ -1,0 +1,168 @@
+@page
+@model Recipea.Pages.Recipes.IndexModel
+@{
+    ViewData["Title"] = "Recipes";
+}
+
+<!-- Floating Action Button -->
+<a class="fab-button" asp-page="./Create" title="Add Recipe">
+    <i class="bi bi-plus"></i>
+</a>
+
+<!-- Search and Filter Section -->
+<div class="mb-4 mt-4">
+    <form method="get" id="filterForm">
+        <div class="row g-3">
+            <!-- Search Box -->
+            <div class="col-md-10">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" name="searchQuery" 
+                           placeholder="Search recipes by title, description, or ingredients..." 
+                           value="@Model.SearchQuery">
+                </div>
+            </div>
+
+            <!-- Filter Button -->
+            <div class="col-md-2 position-relative">
+                <button type="button" class="btn btn-outline-primary w-100" onclick="toggleFilterMenu()">
+                    <i class="bi bi-funnel"></i> Filters
+                </button>
+                
+                <!-- Dropdown Filter Menu -->
+                <div id="filterMenu" class="filter-dropdown-menu card shadow-lg" style="display: none;">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Active Time Slider -->
+                            <div class="col-12">
+                                <label for="maxActiveTime" class="form-label">
+                                    <i class="bi bi-clock"></i> Max Active Time: <span id="activeTimeValue">@(Model.MaxActiveTime?.ToString() ?? "60")</span> minutes
+                                </label>
+                                <input type="range" class="form-range" name="maxActiveTime" id="maxActiveTime" 
+                                       min="5" max="120" step="5" value="@(Model.MaxActiveTime ?? 60)"
+                                       oninput="updateSliderValue('activeTimeValue', this.value)">
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span>5 min</span>
+                                    <span>120 min</span>
+                                </div>
+                            </div>
+
+                            <!-- Total Time Slider -->
+                            <div class="col-12">
+                                <label for="maxTotalTime" class="form-label">
+                                    <i class="bi bi-hourglass"></i> Max Total Time: <span id="totalTimeValue">@(Model.MaxTotalTime?.ToString() ?? "120")</span> minutes
+                                </label>
+                                <input type="range" class="form-range" name="maxTotalTime" id="maxTotalTime" 
+                                       min="5" max="240" step="5" value="@(Model.MaxTotalTime ?? 120)"
+                                       oninput="updateSliderValue('totalTimeValue', this.value)">
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span>5 min</span>
+                                    <span>240 min</span>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary w-100 mb-2">
+                                    <i class="bi bi-check-circle"></i> Apply Filters
+                                </button>
+                                <a href="@Url.Page("./Index")" class="btn btn-secondary w-100">
+                                    <i class="bi bi-x-circle"></i> Clear Filters
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .filter-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        z-index: 1050;
+        min-width: 400px;
+        max-width: 500px;
+        margin-top: 0.5rem;
+    }
+</style>
+
+<script>
+    function updateSliderValue(elementId, value) {
+        document.getElementById(elementId).textContent = value;
+    }
+
+    function toggleFilterMenu() {
+        const menu = document.getElementById('filterMenu');
+        if (menu.style.display === 'none') {
+            menu.style.display = 'block';
+        } else {
+            menu.style.display = 'none';
+        }
+    }
+
+    // Close the menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('filterMenu');
+        const filterButton = event.target.closest('button[onclick="toggleFilterMenu()"]');
+        
+        if (!filterButton && !menu.contains(event.target)) {
+            menu.style.display = 'none';
+        }
+    });
+</script>
+
+<div class="row mt-4">
+    @foreach (var recipe in Model.Recipes)
+    {
+        <div class="col-md-4 col-lg-3 mb-3">
+            <div class="card h-100 shadow-sm recipe-card-small">
+                <a asp-page="./Details" asp-route-id="@recipe.Id" class="text-decoration-none">
+                    <img class="card-img-top" src="@(recipe.ImageUrl ?? "https://via.placeholder.com/300x200")" alt="@recipe.Title" style="cursor: pointer; height: 175px; object-fit: cover;">
+                </a>
+
+                <div class="card-body d-flex flex-column p-2">
+                    <h6 class="card-title mb-1">@recipe.Title</h6>
+                    <div class="text-muted" style="font-size: 0.8rem;">
+                        @if (!string.IsNullOrEmpty(recipe.ActiveTime))
+                        {
+                            <div><i class="bi bi-clock"></i> @recipe.ActiveTime</div>
+                        }
+                        @if (!string.IsNullOrEmpty(recipe.TotalTime))
+                        {
+                            <div><i class="bi bi-hourglass"></i> @recipe.TotalTime</div>
+                        }
+                    </div>
+                    <div class="mt-auto pt-2">
+                        <a class="btn btn-primary btn-sm me-1" asp-page="./Details" asp-route-id="@recipe.Id" title="View">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a class="btn btn-warning btn-sm me-1" asp-page="./Edit" asp-route-id="@recipe.Id" title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a class="btn btn-danger btn-sm" asp-page="./Delete" asp-route-id="@recipe.Id" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .recipe-card-small .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    
+    /* Mobile view - taller cards */
+    @@media (max-width: 767px) {
+        .recipe-card-small .card-img-top {
+            height: 230px !important;
+        }
+    }
+</style>

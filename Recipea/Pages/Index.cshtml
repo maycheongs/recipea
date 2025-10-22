@@ -1,0 +1,17 @@
+﻿@page
+@{
+    Layout = "_Layout";
+}
+
+<!-- Hero section -->
+@section Hero {
+    <section class="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center">
+        <h1 class="display-4 fw-bold">Welcome to Recipea</h1>
+        <p class="lead mb-4">Save, organize, and cook your favorite recipes — beautifully.</p>
+        <div>
+            <a class="btn btn-success btn-lg me-2" asp-page="/Auth/Login">Log In</a>
+            <a class="btn btn-outline-light btn-lg" asp-page="/Auth/Register">Sign Up</a>
+        </div>
+    </section>
+}
+
