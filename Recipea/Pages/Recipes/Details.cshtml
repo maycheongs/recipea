@@ -63,12 +63,12 @@
                 <div class="tab-pane fade show active" id="ingredients" role="tabpanel">
                     @if (!string.IsNullOrEmpty(Model.Recipe.Ingredients))
                     {
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled" id="ingredientsList">
                             @foreach (var ingredient in Model.Recipe.Ingredients.Split('\n', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                <li class="mb-2">
+                                <li class="mb-2" data-original="@ingredient.Trim()">
                                     <i class="bi bi-dot text-success"></i>
-                                    @ingredient.Trim()
+                                    <span class="ingredient-text">@ingredient.Trim()</span>
                                 </li>
                             }
                         </ul>
@@ -121,16 +121,88 @@
 
 @section Scripts {
     <script>
-        // Simple scale functionality placeholder
+        let currentScale = 1;
+        const scales = [0.5, 1, 2, 3];
+        
+        // Convert fractions to decimals
+        function fractionToDecimal(fraction) {
+            const fractionMap = {
+                '¼': 0.25, '½': 0.5, '¾': 0.75,
+                '⅓': 0.333, '⅔': 0.667,
+                '⅛': 0.125, '⅜': 0.375, '⅝': 0.625, '⅞': 0.875,
+                '1/4': 0.25, '1/2': 0.5, '3/4': 0.75,
+                '1/3': 0.333, '2/3': 0.667,
+                '1/8': 0.125, '3/8': 0.375, '5/8': 0.625, '7/8': 0.875
+            };
+            return fractionMap[fraction] || null;
+        }
+        
+        // Convert decimal to mixed number/fraction
+        function decimalToFraction(decimal) {
+            const whole = Math.floor(decimal);
+            const remainder = decimal - whole;
+            
+            // Common fractions
+            const fractions = [
+                [0.125, '⅛'], [0.25, '¼'], [0.333, '⅓'], [0.375, '⅜'],
+                [0.5, '½'], [0.625, '⅝'], [0.667, '⅔'], [0.75, '¾'], [0.875, '⅞']
+            ];
+            
+            for (let [val, frac] of fractions) {
+                if (Math.abs(remainder - val) < 0.01) {
+                    return whole > 0 ? `${whole} ${frac}` : frac;
+                }
+            }
+            
+            // Round to 2 decimal places if no fraction match
+            return decimal.toFixed(2).replace(/\.?0+$/, '');
+        }
+        
+        function scaleIngredient(text, scale) {
+            // Skip if no quantity is detected
+            if (!/\d/.test(text)) {
+                return text;
+            }
+            
+            // Match numbers (including decimals and fractions) with optional following space
+            const regex = /(\d+\.?\d*)\s*([¼½¾⅓⅔⅛⅜⅝⅞])?(\s+)/g;
+            
+            return text.replace(regex, function(match, number, fraction, whitespace) {
+                let value = parseFloat(number);
+                
+                // Add fraction if present
+                if (fraction) {
+                    value += fractionToDecimal(fraction) || 0;
+                }
+                
+                // Scale the value
+                const scaled = value * scale;
+                
+                // Convert back to fraction format and preserve whitespace
+                return decimalToFraction(scaled) + (whitespace || ' ');
+            });
+        }
+        
         document.getElementById('scaleLink')?.addEventListener('click', function(e) {
             e.preventDefault();
-            const scales = ['0.5×', '1×', '2×', '3×'];
-            const currentText = this.querySelector('small').textContent;
-            const currentScale = currentText.match(/[\d.]+×/)[0];
+            
+            // Cycle through scales
             const currentIndex = scales.indexOf(currentScale);
             const nextIndex = (currentIndex + 1) % scales.length;
-            const nextScale = scales[nextIndex];
-            this.querySelector('small').textContent = `${nextScale} scale (click to change)`;
+            currentScale = scales[nextIndex];
+            
+            // Update link text
+            this.querySelector('small').textContent = `${currentScale}× scale (click to change)`;
+            
+            // Scale all ingredients
+            const ingredients = document.querySelectorAll('#ingredientsList li');
+            ingredients.forEach(li => {
+                const original = li.getAttribute('data-original');
+                const span = li.querySelector('.ingredient-text');
+                if (original && span) {
+                    span.textContent = scaleIngredient(original, currentScale);
+                }
+            });
         });
     </script>
 }
