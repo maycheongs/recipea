@@ -62,7 +62,7 @@
             <textarea asp-for="Recipe.Ingredients" class="form-control" id="floatingIngredients" placeholder="Ingredients" style="height: 200px"></textarea>
             <label for="floatingIngredients">Ingredients</label>
             <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
-            <small class="form-text text-muted">Enter each ingredient on a new line</small>
+            <small class="form-text text-muted">Enter each ingredient on a new line. Encase titles with [ ].</small>
         </div>
 
         <!-- Instructions -->
@@ -70,7 +70,7 @@
             <textarea asp-for="Recipe.Instructions" class="form-control" id="floatingInstructions" placeholder="Instructions" style="height: 200px"></textarea>
             <label for="floatingInstructions">Instructions</label>
             <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
-            <small class="form-text text-muted">Enter each step on a new line</small>
+            <small class="form-text text-muted">Enter each step on a new line. Encase titles with [ ].</small>
         </div>
 
         <!-- Submit Button -->

@@ -63,15 +63,25 @@
                 <div class="tab-pane fade show active" id="ingredients" role="tabpanel">
                     @if (!string.IsNullOrEmpty(Model.Recipe.Ingredients))
                     {
-                        <ul class="list-unstyled" id="ingredientsList">
+                        <div id="ingredientsList">
                             @foreach (var ingredient in Model.Recipe.Ingredients.Split('\n', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                <li class="mb-2" data-original="@ingredient.Trim()">
-                                    <i class="bi bi-dot text-success"></i>
-                                    <span class="ingredient-text">@ingredient.Trim()</span>
-                                </li>
+                                var trimmed = ingredient.Trim();
+                                @if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
+                                {
+                                    <!-- Subcategory heading -->
+                                    <h6 class="mt-3 mb-2 text-success fw-bold">@trimmed.Trim('[', ']')</h6>
+                                }
+                                else
+                                {
+                                    <!-- Regular ingredient -->
+                                    <div class="mb-2" data-original="@trimmed">
+                                        <i class="bi bi-dot text-success"></i>
+                                        <span class="ingredient-text">@trimmed</span>
+                                    </div>
+                                }
                             }
-                        </ul>
+                        </div>
                         
                         <div class="mt-4">
                             <a href="javascript:void(0)" class="text-primary" id="scaleLink">
@@ -89,12 +99,37 @@
                 <div class="tab-pane fade" id="instructions" role="tabpanel">
                     @if (!string.IsNullOrEmpty(Model.Recipe.Instructions))
                     {
-                        <ol class="instructions-list">
-                            @foreach (var instruction in Model.Recipe.Instructions.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                        var instructions = Model.Recipe.Instructions.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                        bool inList = false;
+                        
+                        foreach (var instruction in instructions)
+                        {
+                            var trimmed = instruction.Trim();
+                            if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
                             {
-                                <li class="mb-3">@instruction.Trim()</li>
+                                if (inList)
+                                {
+                                    @:</ol>
+                                    inList = false;
+                                }
+                                @:<!-- Subcategory heading -->
+                                <h6 class="mt-3 mb-2 text-success fw-bold">@trimmed.Trim('[', ']')</h6>
                             }
-                        </ol>
+                            else
+                            {
+                                if (!inList)
+                                {
+                                    @:<ol class="instructions-list">
+                                    inList = true;
+                                }
+                                <li class="mb-3">@trimmed</li>
+                            }
+                        }
+                        
+                        if (inList)
+                        {
+                            @:</ol>
+                        }
                     }
                     else
                     {
@@ -195,10 +230,10 @@
             this.querySelector('small').textContent = `${currentScale}× scale (click to change)`;
             
             // Scale all ingredients
-            const ingredients = document.querySelectorAll('#ingredientsList li');
-            ingredients.forEach(li => {
-                const original = li.getAttribute('data-original');
-                const span = li.querySelector('.ingredient-text');
+            const ingredients = document.querySelectorAll('#ingredientsList div[data-original]');
+            ingredients.forEach(div => {
+                const original = div.getAttribute('data-original');
+                const span = div.querySelector('.ingredient-text');
                 if (original && span) {
                     span.textContent = scaleIngredient(original, currentScale);
                 }
