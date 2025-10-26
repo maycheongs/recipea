@@ -9,9 +9,13 @@ namespace Recipea.Models
         [Required]
         public string Title { get; set; } = string.Empty;
         
-        public string Description { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        
+        [Required]
         public string Ingredients { get; set; } = string.Empty;
+        
+        [Required]
         public string Instructions { get; set; } = string.Empty;
         
         // Additional metadata

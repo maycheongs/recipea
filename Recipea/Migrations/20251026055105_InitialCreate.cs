@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,10 +18,14 @@ namespace Recipea.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    ImageUrl = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: true),
                     Ingredients = table.Column<string>(type: "TEXT", nullable: false),
-                    Instructions = table.Column<string>(type: "TEXT", nullable: false)
+                    Instructions = table.Column<string>(type: "TEXT", nullable: false),
+                    Source = table.Column<string>(type: "TEXT", nullable: true),
+                    ActiveTime = table.Column<string>(type: "TEXT", nullable: true),
+                    TotalTime = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

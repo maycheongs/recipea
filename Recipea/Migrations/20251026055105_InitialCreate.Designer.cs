@@ -11,8 +11,8 @@ using Recipea.Data;
 namespace Recipea.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251021181838_AddRecipeMetadata")]
-    partial class AddRecipeMetadata
+    [Migration("20251026055105_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,11 +33,9 @@ namespace Recipea.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Ingredients")
@@ -49,9 +47,6 @@ namespace Recipea.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Source")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SourceUrl")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")

@@ -128,7 +128,7 @@
 <div class="row mt-4">
     @foreach (var recipe in Model.Recipes)
     {
-        <div class="col-6 col-md-4 col-lg-3 mb-3">
+        <div class="col-md-4 col-lg-3 mb-3">
             <div class="card h-100 shadow-sm recipe-card-small">
                 <a asp-page="./Details" asp-route-id="@recipe.Id" class="text-decoration-none">
                     <img class="card-img-top" src="@(recipe.ImageUrl ?? "https://via.placeholder.com/300x200")" alt="@recipe.Title" style="cursor: pointer; height: 175px; object-fit: cover;">
@@ -169,18 +169,10 @@
         font-weight: 600;
     }
     
-    /* Mobile view - taller cards and adjusted layout */
+    /* Mobile view - taller cards */
     @@media (max-width: 767px) {
         .recipe-card-small .card-img-top {
-            height: 200px !important;
-        }
-        
-        .recipe-card-small .card-title {
-            font-size: 0.9rem;
-        }
-        
-        .recipe-card-small .btn-sm {
-            padding: 0.2rem 0.4rem;
+            height: 230px !important;
         }
     }
 </style>
