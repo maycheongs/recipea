@@ -7,9 +7,10 @@
 <div class="container-fluid p-4">
     <h2 class="mb-4">Edit Recipe</h2>
 
-    <form method="post" class="recipe-form">
+    <form method="post" class="recipe-form" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <input type="hidden" asp-for="Recipe.Id" />
+        <input type="hidden" id="isS3Image" value="@Model.IsS3Image.ToString().ToLower()" />
 
         <!-- Title -->
         <div class="form-floating mb-3">
@@ -25,11 +26,20 @@
             <span asp-validation-for="Recipe.Description" class="text-danger"></span>
         </div>
 
+        <!-- Image Upload -->
+        <div class="mb-3">
+            <label for="ImageFile" class="form-label">Upload Image</label>
+            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+            <small class="form-text text-muted">Upload an image file to replace the current image</small>
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+
         <!-- Image URL -->
         <div class="form-floating mb-3">
             <input asp-for="Recipe.ImageUrl" class="form-control" id="floatingImageUrl" placeholder="Image URL" type="url" />
-            <label for="floatingImageUrl">Image URL</label>
+            <label for="floatingImageUrl">Or enter Image URL</label>
             <span asp-validation-for="Recipe.ImageUrl" class="text-danger"></span>
+            <small class="form-text text-muted">Leave blank if uploading a file above or to use default placeholder</small>
         </div>
 
         <!-- Source -->
@@ -87,4 +97,15 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Clear image URL if it's an S3 image
+        document.addEventListener('DOMContentLoaded', function() {
+            const isS3Image = document.getElementById('isS3Image')?.value === 'true';
+            const imageUrlInput = document.getElementById('floatingImageUrl');
+            
+            if (isS3Image && imageUrlInput) {
+                imageUrlInput.value = '';
+            }
+        });
+    </script>
 }

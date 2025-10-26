@@ -15,12 +15,17 @@ namespace Recipea.Pages.Recipes
     {
         private readonly Recipea.Data.AppDbContext _context;
         private readonly SpoonacularService _spoonacularService;
+        private readonly S3Service _s3Service;
 
-        public CreateModel(Recipea.Data.AppDbContext context, SpoonacularService spoonacularService)
+        public CreateModel(Recipea.Data.AppDbContext context, SpoonacularService spoonacularService, S3Service s3Service)
         {
             _context = context;
             _spoonacularService = spoonacularService;
+            _s3Service = s3Service;
         }
+
+        [BindProperty]
+        public IFormFile? ImageFile { get; set; }
 
         public IActionResult OnGet()
         {
@@ -36,6 +41,27 @@ namespace Recipea.Pages.Recipes
             if (!ModelState.IsValid)
             {
                 return Page();
+            }
+
+            // Handle image upload if a file was uploaded
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                try
+                {
+                    // Upload to AWS S3
+                    using var stream = ImageFile.OpenReadStream();
+                    var imageUrl = await _s3Service.UploadImageAsync(stream, ImageFile.FileName);
+                    
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        Recipe.ImageUrl = imageUrl;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(nameof(ImageFile), $"Upload failed: {ex.Message}");
+                    return Page();
+                }
             }
 
             _context.Recipes.Add(Recipe);

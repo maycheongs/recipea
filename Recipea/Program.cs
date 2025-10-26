@@ -12,6 +12,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add HttpClient and Spoonacular service
 builder.Services.AddHttpClient<SpoonacularService>();
 
+// Add AWS S3 service
+builder.Services.AddSingleton<S3Service>();
+
 // Mock authentication setup (placeholder)
 builder.Services.AddAuthentication("FakeCookieAuth")
     .AddCookie("FakeCookieAuth", options =>
