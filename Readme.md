@@ -1,6 +1,6 @@
 # Recipea 🫛
 
-A modern, feature-rich recipe management application built with ASP.NET Core.
+A recipe management application built with ASP.NET Core.
 
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap)
@@ -46,25 +46,19 @@ A modern, feature-rich recipe management application built with ASP.NET Core.
 
 - **Import from URL** using Spoonacular API integration
 - **Automatic parsing** of ingredients, instructions, and metadata
-- **One-click import** from popular recipe websites
-
+  
 ### Modern UI/UX
 
 - **Responsive design** optimized for desktop, tablet, and mobile
 - **Bootstrap 5** for modern, clean interface
 - **Collapsible descriptions** for better content organization
 
-### Security
-
-- **API keys protection** via .gitignore configuration
-- **Environment-based configuration** for development and production
-- **Secure file upload** with validation and type checking
 
 ## Tech Stack
 
 ### Backend
 
-- **.NET 8.0** - Modern, high-performance framework
+- **.NET 8.0** 
 - **ASP.NET Core Razor Pages** - Server-side rendering with MVVM pattern
 - **Entity Framework Core 9.0** - ORM for database operations
 - **SQLite** - Lightweight, file-based database
@@ -72,13 +66,13 @@ A modern, feature-rich recipe management application built with ASP.NET Core.
 ### Frontend
 
 - **Bootstrap 5.3** - Responsive CSS framework
-- **Vanilla JavaScript** - Modern ES6+ for interactivity
+- **Vanilla JavaScript** - ES6+ for interactivity
 - **HTML5** - Semantic markup
 
 ### Cloud Services
 
 - **AWS S3** - Scalable image storage
-- **Spoonacular API** - Recipe import service
+- **Spoonacular API** - Recipe import parsing service
 
 ### Key Packages
 
