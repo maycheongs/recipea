@@ -5,6 +5,10 @@ using Recipea.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Toggle to simulate production mode locally
+// Set ASPNETCORE_ENVIRONMENT=Production or uncomment the line below:
+// builder.Environment.EnvironmentName = "Production";
+
 // Add services
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -61,4 +65,20 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-app.Run();
+// Custom 404 handler for production
+if (!app.Environment.IsDevelopment())
+{
+    app.Use(async (context, next) =>
+    {
+        await next();
+        if (context.Response.StatusCode == 404 && !context.Response.HasStarted)
+        {
+            context.Request.Path = "/NotFound";
+            context.Response.StatusCode = 404;
+            await next();
+        }
+    });
+}
+
+
+await app.RunAsync();
