@@ -1,14 +1,35 @@
+using Microsoft.AspNetCore.Identity;
 using Recipea.Models;
 
 namespace Recipea.Data
 {
     public static class DbSeeder
     {
-        public static void Seed(AppDbContext context)
+        public static async Task SeedAsync(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             context.Database.EnsureCreated();
 
-            if (!context.Recipes.Any())
+            // Create test user
+            if (await userManager.FindByEmailAsync("alice@wonderland.com") == null)
+            {
+                var user = new IdentityUser
+                {
+                    UserName = "alice@wonderland.com",
+                    Email = "alice@wonderland.com",
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(user, "password");
+                if (result.Succeeded)
+                {
+                    // User created successfully
+                }
+            }
+
+            var seedUser = await userManager.FindByEmailAsync("alice@wonderland.com");
+            var seedUserId = seedUser?.Id ?? "";
+
+            if (!context.Recipes.Any() && !string.IsNullOrEmpty(seedUserId))
             {
                 context.Recipes.AddRange(
                     new Recipe
@@ -21,7 +42,8 @@ namespace Recipea.Data
                         Source = "Recipea Kitchen",
                         ActiveTime = "5 Minutes",
                         TotalTime = "5 Minutes",
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        UserId = seedUserId
                     },
                     new Recipe
                     {
@@ -33,7 +55,8 @@ namespace Recipea.Data
                         Source = "Quick Dinners",
                         ActiveTime = "10 Minutes",
                         TotalTime = "15 Minutes",
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        UserId = seedUserId
                     },
                     new Recipe
                     {
@@ -45,7 +68,8 @@ namespace Recipea.Data
                         Source = "Breakfast Classics",
                         ActiveTime = "15 Minutes",
                         TotalTime = "25 Minutes",
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        UserId = seedUserId
                     },
                     new Recipe
                     {
@@ -57,7 +81,8 @@ namespace Recipea.Data
                         Source = "Roti 'n' Rice",
                         ActiveTime = "20 Minutes",
                         TotalTime = "60 Minutes",
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        UserId = seedUserId
                     }
                 );
 
