@@ -92,6 +92,9 @@ namespace Recipea.Pages.Recipes
                     return new JsonResult(new { success = false, error = "Could not import recipe from URL" }) { StatusCode = 400 };
                 }
 
+                // Set the current user as the recipe owner
+                recipe.UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
                 // Save the imported recipe to the database
                 _context.Recipes.Add(recipe);
                 await _context.SaveChangesAsync();
