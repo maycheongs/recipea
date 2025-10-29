@@ -1,0 +1,14 @@
+# directories
+**/bin/
+**/obj/
+**/out/
+
+# files
+fly.toml
+Dockerfile*
+**/.dockerignore
+**/.git
+**/.gitignore
+**/*.md
+Recipea.db-shm
+Recipea.db-wal

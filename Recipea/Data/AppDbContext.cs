@@ -23,11 +23,13 @@ namespace Recipea.Data
                 entity.HasKey(e => e.Id);
                 
                 // Add User relationship (optional - for user-specific recipes)
-                // entity.HasOne<IdentityUser>()
-                //     .WithMany()
-                //     .HasForeignKey("UserId")
-                //     .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne<IdentityUser>()
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
+
+        
     }
 }
