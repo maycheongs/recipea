@@ -7,28 +7,48 @@ namespace Recipea.Services
 {
     public class S3Service
     {
-        private readonly IAmazonS3 _s3Client;
+        private readonly IAmazonS3? _s3Client;
         private readonly string _bucketName;
         private readonly string _region;
         private readonly string _baseUrl;
+        private readonly bool _isEnabled;
 
         public S3Service(IConfiguration configuration)
         {
-            var accessKey = configuration["AWS:AccessKey"];
-            var secretKey = configuration["AWS:SecretKey"];
+            _isEnabled = configuration.GetValue<bool>("AWS:Enabled", false);
             _region = configuration["AWS:Region"] ?? "us-east-1";
             _bucketName = configuration["AWS:BucketName"] ?? "recipea-images";
-            
-            var regionEndpoint = RegionEndpoint.GetBySystemName(_region);
-            
-            _s3Client = new AmazonS3Client(accessKey, secretKey, regionEndpoint);
-            
-            // Construct the base URL for public access
             _baseUrl = $"https://{_bucketName}.s3.{_region}.amazonaws.com";
+            
+            if (_isEnabled)
+            {
+                var accessKey = configuration["AWS:AccessKey"];
+                var secretKey = configuration["AWS:SecretKey"];
+                
+                if (string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey))
+                {
+                    Console.WriteLine("⚠️ AWS S3 is enabled but credentials are missing. S3 uploads will be disabled.");
+                    _isEnabled = false;
+                }
+                else
+                {
+                    var regionEndpoint = RegionEndpoint.GetBySystemName(_region);
+                    _s3Client = new AmazonS3Client(accessKey, secretKey, regionEndpoint);
+                }
+            }
         }
+
+        public bool IsEnabled => _isEnabled;
 
         public async Task<string?> UploadImageAsync(Stream stream, string fileName)
         {
+            // If S3 is disabled, return null to use default image
+            if (!_isEnabled || _s3Client == null)
+            {
+                Console.WriteLine("⚠️ S3 uploads are disabled. Returning null to use default image.");
+                return null;
+            }
+
             try
             {
                 // Generate a unique file name

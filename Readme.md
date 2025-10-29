@@ -32,9 +32,10 @@ A recipe management application built with ASP.NET Core.
 
 ### Image Management
 
-- **Image upload** directly to AWS S3 for reliable cloud storage
+- **Image upload** directly to AWS S3 (can be disabled via config)
 - **Image URL support** for using external images
 - **Automatic fallback** to default placeholder images
+- **Toggle S3 on/off** via `AWS:Enabled` setting for cost control
 - **Optimized for performance** with automatic image compression
 
 ### Search & Filter
@@ -46,19 +47,18 @@ A recipe management application built with ASP.NET Core.
 
 - **Import from URL** using Spoonacular API integration
 - **Automatic parsing** of ingredients, instructions, and metadata
-  
+
 ### Modern UI/UX
 
 - **Responsive design** optimized for desktop, tablet, and mobile
 - **Bootstrap 5** for modern, clean interface
 - **Collapsible descriptions** for better content organization
 
-
 ## Tech Stack
 
 ### Backend
 
-- **.NET 8.0** 
+- **.NET 8.0**
 - **ASP.NET Core Razor Pages** - Server-side rendering with MVVM pattern
 - **Entity Framework Core 9.0** - ORM for database operations
 - **SQLite** - Lightweight, file-based database
