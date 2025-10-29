@@ -101,7 +101,8 @@ namespace Recipea.Pages.Recipes
                 }
             }
 
-            _context.Attach(Recipe).State = EntityState.Modified;
+            // Update the existing recipe with the new values
+            _context.Entry(existingRecipe).CurrentValues.SetValues(Recipe);
 
             try
             {
