@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Recipea.Data;
@@ -6,6 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Recipea.Pages.Recipes
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -26,13 +28,16 @@ namespace Recipea.Pages.Recipes
             MaxActiveTime = maxActiveTime;
             MaxTotalTime = maxTotalTime;
 
-            var query = _context.Recipes.AsQueryable();
+            // Get current user ID
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
+            var query = _context.Recipes.Where(r => r.UserId == currentUserId);
 
             // Apply search filter
             if (!string.IsNullOrWhiteSpace(searchQuery))
             {
                 query = query.Where(r => r.Title.Contains(searchQuery) || 
-                                        r.Description.Contains(searchQuery) ||
+                                        (r.Description != null && r.Description.Contains(searchQuery)) ||
                                         r.Ingredients.Contains(searchQuery));
             }
 

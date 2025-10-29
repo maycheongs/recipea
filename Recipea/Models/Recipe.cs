@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Recipea.Models
 {
@@ -23,5 +24,8 @@ namespace Recipea.Models
         public string? ActiveTime { get; set; }
         public string? TotalTime { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        
+        // User relationship
+        public string UserId { get; set; } = string.Empty;
     }
 }

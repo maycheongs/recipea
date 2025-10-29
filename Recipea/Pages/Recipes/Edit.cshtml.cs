@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using Recipea.Services;
 
 namespace Recipea.Pages.Recipes
 {
+    [Authorize]
     public class EditModel : PageModel
     {
         private readonly Recipea.Data.AppDbContext _context;
@@ -40,8 +42,12 @@ namespace Recipea.Pages.Recipes
                 return NotFound();
             }
 
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+
             var recipe =  await _context.Recipes.FirstOrDefaultAsync(m => m.Id == id);
-            if (recipe == null)
+            
+            // Check if recipe exists and belongs to current user
+            if (recipe == null || recipe.UserId != currentUserId)
             {
                 return NotFound();
             }
@@ -61,6 +67,18 @@ namespace Recipea.Pages.Recipes
             {
                 return Page();
             }
+
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+            
+            // Verify the recipe belongs to the current user
+            var existingRecipe = await _context.Recipes.FindAsync(Recipe.Id);
+            if (existingRecipe == null || existingRecipe.UserId != currentUserId)
+            {
+                return NotFound();
+            }
+
+            // Ensure the user ID remains the same
+            Recipe.UserId = existingRecipe.UserId;
 
             // Handle image upload if a file was uploaded
             if (ImageFile != null && ImageFile.Length > 0)

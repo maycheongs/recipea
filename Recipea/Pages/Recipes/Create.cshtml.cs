@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using Recipea.Services;
 
 namespace Recipea.Pages.Recipes
 {
+    [Authorize]
     public class CreateModel : PageModel
     {
         private readonly Recipea.Data.AppDbContext _context;
@@ -42,6 +44,9 @@ namespace Recipea.Pages.Recipes
             {
                 return Page();
             }
+
+            // Set the current user as the recipe owner
+            Recipe.UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
 
             // Handle image upload if a file was uploaded
             if (ImageFile != null && ImageFile.Length > 0)
