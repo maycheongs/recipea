@@ -119,6 +119,15 @@ namespace Recipea.Pages.Recipes
                     throw;
                 }
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"An error occurred while saving: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    ModelState.AddModelError("", $"Details: {ex.InnerException.Message}");
+                }
+                return Page();
+            }
 
             return RedirectToPage("./Details", new { id = Recipe.Id });
         }

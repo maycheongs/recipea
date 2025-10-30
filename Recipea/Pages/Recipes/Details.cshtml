@@ -8,8 +8,9 @@
     <div class="row">
         <!-- Recipe Image -->
         <div class="col-md-3 mb-4">
-            <img src="@(Model.Recipe.ImageUrl ?? "https://via.placeholder.com/300x300")" 
+            <img src="@(Model.Recipe.ImageUrl ?? "/images/default_food.jpg")" 
                  alt="@Model.Recipe.Title" 
+                 onerror="this.src='/images/default_food.jpg'"
                  class="img-fluid rounded shadow" 
                  style="width: 100%; object-fit: cover; max-height: 300px;" />
         </div>
