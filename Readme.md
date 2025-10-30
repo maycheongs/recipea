@@ -69,7 +69,7 @@ Recipea is a recipe management app that allows users to create, import and searc
 - **Collapsible descriptions** - Better content organization
 - **Intuitive navigation** - Easy to use and navigate
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 
@@ -122,7 +122,7 @@ docker build -t recipea .
 docker run -p 8080:8080 recipea
 ```
 
-## 💻 Development
+## Development
 
 ### Prerequisites
 
