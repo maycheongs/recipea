@@ -68,3 +68,8 @@ Thumbs.db
 appsettings.Development.json
 appsettings.Production.json
 
+#Ignore markdown files
+*.md
+
+#Files to keep
+!Readme.md
