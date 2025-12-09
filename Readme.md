@@ -12,6 +12,12 @@ A recipe management application built with ASP.NET Core, featuring user authenti
 Recipea is a recipe management app that allows users to create, import and search through their personal recipe collection. With built-in authentication, users maintain their own private recipe libraries.
 
 **Live Demo:** [Visit the deployed app](https://recipea.fly.dev)
+Test User Credentials:
+
+- **Email:** `alice@wonderland.com`
+- **Password:** `password`
+
+This test user includes pre-seeded recipe data, and the db will reset + reseed periodically.
 
 ## Screenshots
 
@@ -152,12 +158,3 @@ docker run -p 8080:8080 recipea
 
 4. **Access the app**
    - Navigate to `http://localhost:5217`
-
-### Demo Account
-
-For testing purposes, use these credentials:
-
-- **Email:** `alice@wonderland.com`
-- **Password:** `password`
-
-The demo account includes pre-seeded recipe data, and the demo db will reset + reseed periodically.
