@@ -160,4 +160,4 @@ For testing purposes, use these credentials:
 - **Email:** `alice@wonderland.com`
 - **Password:** `password`
 
-The demo account includes pre-seeded recipe data.
+The demo account includes pre-seeded recipe data, and the demo db will reset + reseed periodically.
